@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secretowner 
+spec:
+  containers:
+  - image: khaines/kubeenvsecrets-secretowner
+    imagePullPolicy: Always
+    name: secretowner
+    env:
+      - name: KUBE_SECRET
+        valueFrom:
+            secretKeyRef:
+              name: demoserectspy
+              key: supersecretvalue
+    resources: 
+      limits:
+        cpu: 50m
+        memory: 100Mi
+        

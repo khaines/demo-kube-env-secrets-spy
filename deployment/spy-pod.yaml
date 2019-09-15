@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secretspy
+spec:
+  serviceAccount: secretspy
+  containers:
+  - image: khaines/kubeenvsecrets-secretspy
+    imagePullPolicy: Always
+    name: secretspy
+    volumeMounts:
+      - mountPath: /var/run/docker.sock
+        name: dockersock
+    resources: 
+      limits:
+        cpu: 50m
+        memory: 100Mi
+  volumes:
+    - name: dockersock
+      hostPath:
+        path: /var/run/docker.sock

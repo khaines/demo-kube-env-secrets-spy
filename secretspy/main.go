@@ -2,13 +2,16 @@ package main
 
 import (
 	"context"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"os"
+	"os/signal"
 )
 
 func main() {
-	cli, err := client.NewClientWithOpts(client.FromEnv)
+	cli, err := client.NewClientWithOpts(client.FromEnv,client.WithVersion("1.40"))
 	if err != nil {
 		panic(err)
 	}
@@ -17,21 +20,25 @@ func main() {
 		panic(err)
 	}
 	for _, container := range containers {
-		log.Info("msg","found container","id",container.ID[:10],"image",container.Image)
+		log.Info(fmt.Sprintf("found container. id: %v image: %v",container.ID[:10],container.Image))
 
 		details,err :=  cli.ContainerInspect(context.Background(),container.ID)
 		if err != nil{
-			log.Error("msg","could not inspect container", "name",container.Names, "id", container.ID)
+			log.Error(fmt.Sprintf("could not inspect container. id: %v image: %v",container.ID[:10],container.Image))
 		}
 		envs:= details.Config.Env
 		if len(envs) > 0 {
-			log.Info("msg","found environment variables assigned to container", "count",len(envs))
+			log.Info(fmt.Sprintf("found environment variables assigned to container: count=%v", len(envs)))
 			for _, env := range envs {
-				log.Info("msg",env)
+				log.Info(env)
 			}
 		}
 	}
 
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt,os.Kill)
 
+	// Block until a signal is received.
+	<-c
 
 }
