@@ -5,7 +5,8 @@ metadata:
 spec:
   volumes:
     - name: secretmount
-      secret: demoserectspy
+      secret:
+        secretName: demoserectspy
   containers:
   - image: khaines/kubeenvsecrets-safesecretowner
     imagePullPolicy: Always
