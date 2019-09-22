@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: safesecretowner
+spec:
+  volumes:
+    - name: secretmount
+      secret: demoserectspy
+  containers:
+  - image: khaines/kubeenvsecrets-safesecretowner
+    imagePullPolicy: Always
+    name: safesecretowner
+    volumeMounts:
+      - name: secretmount
+        mountPath: "/secrets"
+    env:
+      - name: KUBE_SECRET
+        value: "/secrets/supersecretvalue"
+    resources: 
+      limits:
+        cpu: 50m
+        memory: 100Mi
+        

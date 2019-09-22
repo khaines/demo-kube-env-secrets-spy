@@ -3,7 +3,6 @@ kind: Pod
 metadata:
   name: secretspy
 spec:
-  serviceAccount: secretspy
   containers:
   - image: khaines/kubeenvsecrets-secretspy
     imagePullPolicy: Always
